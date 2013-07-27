@@ -4,23 +4,25 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets multimedia
 
 TARGET = Buzzer
 TEMPLATE = app
 
-include(lib/qextserialport/src/qextserialport.pri)
-
 SOURCES += main.cpp\
-        mainwindow.cpp
+        ui/mainwindow.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += ui/mainwindow.h
 
-FORMS    += mainwindow.ui
+FORMS    += ui/mainwindow.ui
 
 RESOURCES += \
     ressources.qrc
 
+
+ICON = ressources/Question.icns
+
+include(lib/qextserialport/src/qextserialport.pri)
 

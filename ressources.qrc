@@ -1,5 +1,8 @@
 <RCC>
     <qresource prefix="/sound">
-        <file>sound/vive-le-vent.mp3</file>
+        <file>ressources/vive-le-vent.mp3</file>
+    </qresource>
+    <qresource prefix="/img">
+        <file>ressources/Question.png</file>
     </qresource>
 </RCC>
