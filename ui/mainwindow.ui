@@ -14,8 +14,8 @@
    <string>Buzzer</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../ressources.qrc">
-    <normaloff>:/img/ressources/Question.png</normaloff>:/img/ressources/Question.png</iconset>
+   <iconset resource="../resources.qrc">
+    <normaloff>:/img/resources/Question.png</normaloff>:/img/resources/Question.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -99,7 +99,7 @@
      <x>0</x>
      <y>0</y>
      <width>666</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFichier">
@@ -121,8 +121,8 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionQuitter">
    <property name="icon">
-    <iconset resource="../ressources.qrc">
-     <normaloff>:/img/ressources/exit.png</normaloff>:/img/ressources/exit.png</iconset>
+    <iconset resource="../resources.qrc">
+     <normaloff>:/img/resources/exit.png</normaloff>:/img/resources/exit.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Quitter</string>
@@ -141,7 +141,7 @@
   <tabstop>boxReception</tabstop>
  </tabstops>
  <resources>
-  <include location="../ressources.qrc"/>
+  <include location="../resources.qrc"/>
  </resources>
  <connections/>
 </ui>

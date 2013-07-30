@@ -40,14 +40,9 @@ MainWindow::~MainWindow()
 void MainWindow::on_ButtonConnexion_clicked()
 {
 
-    QFile file(":/sound/resources/vive-le-vent.mp3");
-    file.copy(QApplication::applicationDirPath()+"/tmp/"+file.fileName());
     player_ = new QMediaPlayer;
     player_->setVolume(100);
-    qDebug() << file.fileName() << " app:" <<  QCoreApplication::applicationFilePath() << endl;
     player_->setMedia(QUrl("qrc:/sound/resources/vive-le-vent.mp3"));
-    //player_->setMedia(QUrl::fromLocalFile("/Users/Nomyx/Documents/Gym/Project/Buzzer/ressources/vive-le-vent.mp3"));
-
     player_->play();
 
     /*  if(ui->ButtonConnexion->isChecked()) {
