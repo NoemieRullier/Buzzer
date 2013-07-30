@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/sound">
+        <file>resources/vive-le-vent.mp3</file>
+    </qresource>
+    <qresource prefix="/img">
+        <file>resources/Question.png</file>
+        <file>resources/exit.png</file>
+    </qresource>
+</RCC>
