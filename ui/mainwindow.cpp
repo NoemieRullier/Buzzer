@@ -7,13 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-
-
-    // enumerateur = new QextSerialEnumerateur();
-    ports = enumerateur.getPorts(); // On met les infos des ports dans une liste
+    ports_ = enumerateur_.getPorts(); // On met les infos des ports dans une liste
     //on parcourt la liste des ports
-    for(int i=0; i<ports.size(); i++){
-        ui->comboPort->addItem(ports.at(i).physName);
+    for(int i=0; i<ports_.size(); i++){
+        ui->comboPort->addItem(ports_.at(i).physName);
     }
 
     // Ajout des vitesses dans la combobox
@@ -31,20 +28,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-    if (port != NULL){
-        delete port;
+    if (port_ != NULL){
+        delete port_;
     }
+    if (player_ != NULL){
+        delete player_;
+    }
+    delete ui;
 }
 
 void MainWindow::on_ButtonConnexion_clicked()
 {
 
-    player = new QMediaPlayer;
-    // ...
-    player->setMedia(QUrl::fromLocalFile("/Users/Nomyx/Documents/Gym/Buzzer/Buzzer/sound/vive-le-vent.mp3"));
-    player->setVolume(50);
-    player->play();
+    QFile file(":/sound/resources/vive-le-vent.mp3");
+    file.copy(QApplication::applicationDirPath()+"/tmp/"+file.fileName());
+    player_ = new QMediaPlayer;
+    player_->setVolume(100);
+    qDebug() << file.fileName() << " app:" <<  QCoreApplication::applicationFilePath() << endl;
+    player_->setMedia(QUrl("qrc:/sound/resources/vive-le-vent.mp3"));
+    //player_->setMedia(QUrl::fromLocalFile("/Users/Nomyx/Documents/Gym/Project/Buzzer/ressources/vive-le-vent.mp3"));
+
+    player_->play();
 
     /*  if(ui->ButtonConnexion->isChecked()) {
         //on essaie de faire la connexion avec la carte Arduino
@@ -94,9 +98,10 @@ BaudRateType MainWindow::getBaudRateFromString(QString baudRate) {
 }
 
 void MainWindow::readData() {
-    QByteArray array = port->readAll();
+    QByteArray array = port_->readAll();
     /* if (array.data() == "playSound"){
-        QSound::play("vive-le-vent.mp3");
+    player_->setMedia(QUrl::fromLocalFile("/Users/Nomyx/Documents/Gym/Buzzer/Buzzer/sound/vive-le-vent.mp3"));
+    player_->play();
     }*/
     ui->boxReception->insertPlainText(array);
 }

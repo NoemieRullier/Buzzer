@@ -10,6 +10,7 @@
 #include <QPushButton>
 #include <QFileInfo>
 #include <QMediaPlayer>
+#include <QResource>
 
 #include "qextserialport.h"
 #include "qextserialenumerator.h"
@@ -29,10 +30,11 @@ public:
 private:
 
     Ui::MainWindow *ui;
-    QextSerialEnumerator enumerateur; // L'objet mentionnant les infos des ports
-    QList<QextPortInfo> ports;
-    QextSerialPort * port; // L'objet représentant le port
-    QMediaPlayer * player;
+
+    QextSerialEnumerator enumerateur_; // L'objet mentionnant les infos des ports
+    QList<QextPortInfo> ports_; // L'ensemble des ports disponibles
+    QextSerialPort * port_; // L'objet représentant le port sélectonné
+    QMediaPlayer * player_; // L'objet permettant de lire des musiques
 
     BaudRateType getBaudRateFromString(QString baudRate);
 

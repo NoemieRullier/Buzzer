@@ -19,10 +19,10 @@ HEADERS  += ui/mainwindow.h
 FORMS    += ui/mainwindow.ui
 
 RESOURCES += \
-    ressources.qrc
+    resources.qrc
 
 
-ICON = ressources/Question.icns
+ICON = resources/Question.icns
 
 include(lib/qextserialport/src/qextserialport.pri)
 
