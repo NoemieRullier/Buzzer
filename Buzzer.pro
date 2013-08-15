@@ -24,6 +24,5 @@ RESOURCES += \
 
 ICON = resources/Question.icns
 
-include(lib\qextserialport\src\qextserialport.pri)
-#include(lib/qextserialport/src/qextserialport.pri)
-
+#include(lib\qextserialport\src\qextserialport.pri)
+include(lib/qextserialport/src/qextserialport.pri)
