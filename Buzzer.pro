@@ -18,8 +18,7 @@ HEADERS  += ui/mainwindow.h
 
 FORMS    += ui/mainwindow.ui
 
-RESOURCES += \
-    resources.qrc
+RESOURCES += resources.qrc
 
 
 ICON = resources/Question.icns

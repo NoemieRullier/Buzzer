@@ -1,20 +1,26 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <iostream>
+#include <QMessageBox>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->boxReception->setReadOnly(true);
+    ui->boxEmission->setEnabled(false);
+    ui->boxReception->setEnabled(false);
+    ui->label->setEnabled(false);
+    ui->label_4->setEnabled(false);
 
     ports_ = enumerateur_.getPorts(); // On met les infos des ports dans une liste
-    //on parcourt la liste des ports
+    // List the ports
     for(int i=0; i<ports_.size(); i++){
         ui->comboPort->addItem(ports_.at(i).physName);
     }
 
-    // Ajout des vitesses dans la combobox
+    // Add speeds in combobox
     ui->comboVitesse->addItem("300");
     ui->comboVitesse->addItem("1200");
     ui->comboVitesse->addItem("2400");
@@ -24,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->comboVitesse->addItem("38400");
     ui->comboVitesse->addItem("57600");
     ui->comboVitesse->addItem("115200");
+    ui->comboVitesse->setCurrentIndex(4);
 
 }
 
@@ -40,37 +47,58 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_ButtonConnexion_clicked()
 {
-//TODO Modifier la connexion + la vitesse et compresser lza librairie + désactiver box tant que pas de connexion valide ...
+    //TODO Modifier la liste des connexion + compresser la librairie + send data click enter + quitter raccourci
     if(! connected_) {
-        //on essaie de faire la connexion avec la carte Arduino
-        //on commence par créer l'objet port série
-        port_ = new QextSerialPort("COM4",QextSerialPort::EventDriven);
-        //on règle le port utilisé (sélectionné dans la liste déroulante)
-        // port_->setPortName(ui->comboPort->currentText());
-        //on règle la vitesse utilisée
-        //  port_->setBaudRate(getBaudRateFromString(ui->comboVitesse->currentText()));
-        //quelques règlages pour que tout marche bien
-        port_->setParity(PAR_NONE);//parité
-        port_->setStopBits(STOP_1);//nombre de bits de stop
-        port_->setDataBits(DATA_8);//nombre de bits de données
-        port_->setFlowControl(FLOW_OFF);//pas de contrôle de flux
-        //on démarre !
-        port_->open(QIODevice::ReadWrite);
-        //change le message du bouton
-        ui->ButtonConnexion->setText("Deconnecter");
+        // On essaie de faire la connexion avec la carte Arduino
 
-        //on fait la connexion pour pouvoir obtenir les évènements
-        connect(port_,SIGNAL(readyRead()), this, SLOT(readData()));
-        connect(ui->boxEmission,SIGNAL(textChanged()),this,SLOT(sendData()));
-        connected_ = true;
+        port_ = new QextSerialPort("COM4",QextSerialPort::EventDriven); // Create object port series
+        // port_->setPortName(ui->comboPort->currentText());
+        port_->setBaudRate(getBaudRateFromString(ui->comboVitesse->currentText())); // Add speed
+        // Some rules
+        port_->setParity(PAR_NONE);// Parity
+        port_->setStopBits(STOP_1);// Nombre of stop bits
+        port_->setDataBits(DATA_8);// Number of data bits
+        port_->setFlowControl(FLOW_OFF);// No flow control
+
+        // Start connexion
+        if (port_->open(QIODevice::ReadWrite)){
+            ui->ButtonConnexion->setText("Deconnecter");
+            // Connect evenements with fonction
+            connect(port_,SIGNAL(readyRead()), this, SLOT(readData()));
+            connect(ui->boxEmission,SIGNAL(textChanged()),this,SLOT(sendData()));
+            connected_ = true;
+            // Activation of elements
+            ui->boxEmission->setEnabled(true);
+            ui->boxReception->setEnabled(true);
+            ui->label->setEnabled(true);
+            ui->label_4->setEnabled(true);
+            // Deactivation of elements of connexion
+            ui->label_2->setEnabled(false);
+            ui->label_3->setEnabled(false);
+            ui->comboPort->setEnabled(false);
+            ui->comboVitesse->setEnabled(false);
+        }
+        else {
+            QMessageBox::critical(this,"Erreur","Impossible d'ouvrir la connexion avec le dispositif",QMessageBox::Cancel);
+        }
     }
     else {
-        //on se déconnecte de la carte Arduino
+        // Disconnection
         port_->close();
-        //puis on détruit l'objet port série devenu inutile
         delete port_;
         ui->ButtonConnexion->setText("Connecter");
         connected_ = false;
+        // Deactivation elements
+        ui->boxReception->setReadOnly(true);
+        ui->boxEmission->setEnabled(false);
+        ui->boxReception->setEnabled(false);
+        ui->label->setEnabled(false);
+        ui->label_4->setEnabled(false);
+        // Activation of elements for the connexion
+        ui->label_2->setEnabled(true);
+        ui->label_3->setEnabled(true);
+        ui->comboPort->setEnabled(true);
+        ui->comboVitesse->setEnabled(true);
     }
 }
 
@@ -91,14 +119,13 @@ BaudRateType MainWindow::getBaudRateFromString(QString baudRate) {
 }
 
 void MainWindow::readData() {
-
     if (port_->canReadLine()){
         QByteArray array = port_->readLine();
         ui->boxReception->insertPlainText(array);
         if (strncmp(array.data(),"playSound",9) == 0){
             player_ = new QMediaPlayer;
             player_->setVolume(100);
-            player_->setMedia(QUrl("qrc:/sound/resources/vive-le-vent.mp3"));
+            player_->setMedia(QUrl("qrc:/sound/resources/buzz.mp3"));
             player_->play();
         }
     }
@@ -106,7 +133,6 @@ void MainWindow::readData() {
 
 
 void MainWindow::sendData() {
-    std::cout << "on passe send" << std::endl;
     QString caractere = ui->boxEmission->toPlainText().right(1);
     if (port_ != NULL){
         port_->write(caractere.toStdString().c_str());
