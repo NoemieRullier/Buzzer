@@ -1,11 +1,12 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-
+#include <iostream>
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->boxReception->setReadOnly(true);
 
     ports_ = enumerateur_.getPorts(); // On met les infos des ports dans une liste
     //on parcourt la liste des ports
@@ -39,41 +40,38 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_ButtonConnexion_clicked()
 {
-
-    player_ = new QMediaPlayer;
-    player_->setVolume(100);
-    player_->setMedia(QUrl("qrc:/sound/resources/vive-le-vent.mp3"));
-    player_->play();
-
-    /*  if(ui->ButtonConnexion->isChecked()) {
+//TODO Modifier la connexion + la vitesse et compresser lza librairie + désactiver box tant que pas de connexion valide ...
+    if(! connected_) {
         //on essaie de faire la connexion avec la carte Arduino
         //on commence par créer l'objet port série
-        port = new QextSerialPort();
+        port_ = new QextSerialPort("COM4",QextSerialPort::EventDriven);
         //on règle le port utilisé (sélectionné dans la liste déroulante)
-        port->setPortName(ui->comboPort->currentText());
+        // port_->setPortName(ui->comboPort->currentText());
         //on règle la vitesse utilisée
-        port->setBaudRate(getBaudRateFromString(ui->comboVitesse->currentText()));
+        //  port_->setBaudRate(getBaudRateFromString(ui->comboVitesse->currentText()));
         //quelques règlages pour que tout marche bien
-        port->setParity(PAR_NONE);//parité
-        port->setStopBits(STOP_1);//nombre de bits de stop
-        port->setDataBits(DATA_8);//nombre de bits de données
-        port->setFlowControl(FLOW_OFF);//pas de contrôle de flux
+        port_->setParity(PAR_NONE);//parité
+        port_->setStopBits(STOP_1);//nombre de bits de stop
+        port_->setDataBits(DATA_8);//nombre de bits de données
+        port_->setFlowControl(FLOW_OFF);//pas de contrôle de flux
         //on démarre !
-        port->open(QextSerialPort::ReadOnly);
+        port_->open(QIODevice::ReadWrite);
         //change le message du bouton
         ui->ButtonConnexion->setText("Deconnecter");
 
         //on fait la connexion pour pouvoir obtenir les évènements
-        connect(port,SIGNAL(readyRead()), this, SLOT(readData()));
+        connect(port_,SIGNAL(readyRead()), this, SLOT(readData()));
         connect(ui->boxEmission,SIGNAL(textChanged()),this,SLOT(sendData()));
+        connected_ = true;
     }
     else {
         //on se déconnecte de la carte Arduino
-        port->close();
+        port_->close();
         //puis on détruit l'objet port série devenu inutile
-        delete port;
+        delete port_;
         ui->ButtonConnexion->setText("Connecter");
-    }*/
+        connected_ = false;
+    }
 }
 
 BaudRateType MainWindow::getBaudRateFromString(QString baudRate) {
@@ -93,10 +91,24 @@ BaudRateType MainWindow::getBaudRateFromString(QString baudRate) {
 }
 
 void MainWindow::readData() {
-    QByteArray array = port_->readAll();
-    /* if (array.data() == "playSound"){
-    player_->setMedia(QUrl::fromLocalFile("/Users/Nomyx/Documents/Gym/Buzzer/Buzzer/sound/vive-le-vent.mp3"));
-    player_->play();
-    }*/
-    ui->boxReception->insertPlainText(array);
+
+    if (port_->canReadLine()){
+        QByteArray array = port_->readLine();
+        ui->boxReception->insertPlainText(array);
+        if (strncmp(array.data(),"playSound",9) == 0){
+            player_ = new QMediaPlayer;
+            player_->setVolume(100);
+            player_->setMedia(QUrl("qrc:/sound/resources/vive-le-vent.mp3"));
+            player_->play();
+        }
+    }
+}
+
+
+void MainWindow::sendData() {
+    std::cout << "on passe send" << std::endl;
+    QString caractere = ui->boxEmission->toPlainText().right(1);
+    if (port_ != NULL){
+        port_->write(caractere.toStdString().c_str());
+    }
 }

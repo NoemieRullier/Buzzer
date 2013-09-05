@@ -87,7 +87,7 @@ void ActionAppui_1(){
   if (!already_light){
     already_light = true;
     state_LED_1 = LOW; // On allume la LED n°1
-   // playBuzzer();
+    playBuzzer();
   }
 }
 
@@ -95,7 +95,7 @@ void ActionAppui_2(){
   if (!already_light){
     already_light = true;
     state_LED_2 = LOW; // On allume la LED n°2
-   // playBuzzer();
+    playBuzzer();
   }
 }
 
@@ -103,10 +103,10 @@ void ActionAppui_3(){
   if (!already_light){
     already_light = true;
     state_LED_3 = LOW; // On allume la LED n°3
-    //playBuzzer();
+    playBuzzer();
   }
 }
 
-/*void playBuzzer(){
-  Serial.write("playSound");
-}*/
+void playBuzzer(){
+  Serial.println("playSound");
+}

@@ -35,6 +35,7 @@ private:
     QList<QextPortInfo> ports_; // L'ensemble des ports disponibles
     QextSerialPort * port_; // L'objet représentant le port sélectonné
     QMediaPlayer * player_; // L'objet permettant de lire des musiques
+    bool connected_;
 
     BaudRateType getBaudRateFromString(QString baudRate);
 
@@ -42,6 +43,7 @@ private:
 private slots:
     void on_ButtonConnexion_clicked();
     void readData();
+    void sendData();
 };
 
 #endif // MAINWINDOW_H
