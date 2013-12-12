@@ -63,6 +63,8 @@ void MainWindow::on_ButtonConnexion_clicked()
         // Start connexion
         if (port_->open(QIODevice::ReadWrite)){
             player_ = new QMediaPlayer;
+            connect(player_, SIGNAL(stateChanged(QMediaPlayer::State)),this,SLOT(changeStatusMedia(QMediaPlayer::State)));
+            inUse_ = false;
             ui->ButtonConnexion->setText("Deconnecter");
             // Connect evenements with fonction
             connect(port_,SIGNAL(readyRead()), this, SLOT(readData()));
@@ -125,15 +127,15 @@ void MainWindow::readData() {
         ui->boxReception->insertPlainText(array);
         //player_ = new QMediaPlayer;
         player_->setVolume(100);
-        if (strncmp(array.data(),"playSoundJ1",11) == 0){
+        if (!inUse_ && strncmp(array.data(),"playSoundJ1",11) == 0){
             player_->setMedia(QUrl("qrc:/sound/resources/buzz.mp3"));
             player_->play();
         }
-        else if (strncmp(array.data(),"playSoundJ2",11) == 0){
+        else if (!inUse_ && strncmp(array.data(),"playSoundJ2",11) == 0){
             player_->setMedia(QUrl("qrc:/sound/resources/J2_Intello.mp3"));
             player_->play();
         }
-        else if (strncmp(array.data(),"playSoundJ3",11) == 0){
+        else if (!inUse_ && strncmp(array.data(),"playSoundJ3",11) == 0){
             player_->setMedia(QUrl("qrc:/sound/resources/J3_Barbie-Ken.mp3"));
             player_->play();
         }
@@ -145,5 +147,16 @@ void MainWindow::sendData() {
     QString caractere = ui->boxEmission->toPlainText().right(1);
     if (port_ != NULL){
         port_->write(caractere.toStdString().c_str());
+    }
+}
+
+void MainWindow::changeStatusMedia(QMediaPlayer::State status){
+    if (status != QMediaPlayer::PlayingState){
+        std::cout << "Pause ou stop" << std::endl;
+        inUse_ = false;
+    }
+    else {
+        std::cout << "En marche" << std::endl;
+        inUse_ = true;
     }
 }
