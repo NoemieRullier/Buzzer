@@ -4,8 +4,7 @@
  * Programme permettant d'allumer une lumière correspondant au premier bouton ayant buzze
  * et d'envoyer un son (Connexion avec un programme Qt)
  */
- 
-#include <TimeAlarms.h>
+
 
 // Connexion des boutons
 const int buzzer_1 = 19;
