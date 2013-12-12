@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/sound">
         <file>resources/buzz.mp3</file>
+        <file>resources/J2_Intello.mp3</file>
+        <file>resources/J3_Barbie-Ken.mp3</file>
     </qresource>
     <qresource prefix="/img">
         <file>resources/Question.png</file>

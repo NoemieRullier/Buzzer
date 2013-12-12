@@ -122,11 +122,22 @@ void MainWindow::readData() {
     if (port_->canReadLine()){
         QByteArray array = port_->readLine();
         ui->boxReception->insertPlainText(array);
-        if (strncmp(array.data(),"playSound",9) == 0){
+        if (strncmp(array.data(),"playSoundJ1",11) == 0){
             player_ = new QMediaPlayer;
             player_->setVolume(100);
             player_->setMedia(QUrl("qrc:/sound/resources/buzz.mp3"));
             player_->play();
+        }
+        else if (strncmp(array.data(),"playSoundJ2",11) == 0){
+            player_ = new QMediaPlayer;
+            player_->setVolume(100);
+            player_->setMedia(QUrl("qrc:/sound/resources/J2_Intello.mp3"));
+            player_->play();
+        }
+        else if (strncmp(array.data(),"playSoundJ3",11) == 0){
+            player_ = new QMediaPlayer;
+            player_->setVolume(100);
+            player_->setMedia(QUrl("qrc:/sound/resources/J3_Barbie-Ken.mp3"));
         }
     }
 }
