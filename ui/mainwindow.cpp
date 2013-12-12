@@ -128,7 +128,7 @@ void MainWindow::readData() {
         //player_ = new QMediaPlayer;
         player_->setVolume(100);
         if (!inUse_ && strncmp(array.data(),"playSoundJ1",11) == 0){
-            player_->setMedia(QUrl("qrc:/sound/resources/buzz.mp3"));
+            player_->setMedia(QUrl("qrc:/sound/resources/J1_Gigi.mp3"));
             player_->play();
         }
         else if (!inUse_ && strncmp(array.data(),"playSoundJ2",11) == 0){
